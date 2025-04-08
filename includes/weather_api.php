@@ -70,10 +70,10 @@ function prevision($ville) : array{
      * @param string $filename Le chemin vers le fichier compteur. Par défaut, "counter.txt".
      * @return int Retourne la valeur mise à jour du compteur.
      */
-    function hitCounter($filename = './util/counter.txt') : int {
+    function hitCounter($filename = './util/counter.csv') : array {
         // On vérifie si le fichier existe, sinon le créer avec la valeur 0
         if (!file_exists($filename)) {
-            file_put_contents($filename, "0");
+            file_put_contents($filename, "0", LOCK_EX);
         }
         
         // Lire la valeur actuelle et la convertir en entier
@@ -81,11 +81,20 @@ function prevision($ville) : array{
             
         // Incrémenter le compteur
         $counter++;
+        $mois = date("F");
+    
+        // Préparer la ligne pour formter file_put_contents
+        $line = $mois . "," . $counter;
+
+        print_r($counter);
 
         // Verrouiller le fichier en mode exclusif
-        file_put_contents($filename, $counter, LOCK_EX);
+        file_put_contents($filename, $line, LOCK_EX);
 
-        return $counter;
+        return array(
+                'counter' => $counter,
+                'date' => $mois,            
+            );
     }
 
 ?>

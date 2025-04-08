@@ -12,6 +12,7 @@
             
             <div class="footer-info">
                 <a href="about.php">À propos</a>
+                <p>visiteurs : <?php $count= hitCounter(); echo $count['counter']; ?></p>
                 <!-- <a href="privacy.php">Confidentialité</a> -->
             </div>
      

@@ -42,48 +42,14 @@ $meteo = prevision($ville);
 echo "<pre>";
 print_r($meteo);
 echo "</pre>";
+
+
+
+$count= hitCounter(); 
+echo"<pr>";
+echo"<pre>";
+print_r($count);
+echo"<pre>";
+// echo $count['counter'];
 ?>
 
-<?php
-    $ville ="tour";
-    $weatherData = prevision($ville);
-?>
-<!DOCTYPE html>
-<html lang="fr">
-<head>
-    <meta charset="UTF-8">
-    <title>Test onglets CSS</title>
-    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.5/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-SgOJa3DmI69IUzQ2PVdRZhwQ+dy64/BUtbMJw1MZ8t5HZApcHrRKUc4W0kG879m7" crossorigin="anonymous">
-
-        <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
-</head>
-<body>
-<div class="prevision-tabs">
-                <div class="tab-header">
-                    <button class="tab-btn" data-tab="daily">Prévisions 3 jours</button>
-                    <button class="tab-btn" type="button" data-bs-toggle="collapse" data-bs-target="#hourly" aria-expanded="false" aria-controls="hourly" data-tab="hourly">Prévisions horaires</button>
-                </div>
-                
-                <div class="tab-content">
-                    <div id="daily">
-                        <div class="daily-prevision">
-                            <?php
-                            
-                           echo "jour de la semaine";
-                            ?>
-                        </div>
-                    </div>
-
-                    
-                    <div id="hourly" class="collapse collapse-horizontal">
-                        <div class="hourly-prevision">
-                            <?php
-							echo "heures";             
-                            ?>
-                        </div>
-                    </div>
-
-
-                </div>
-</body>
-</html>
