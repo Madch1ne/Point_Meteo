@@ -1,26 +1,24 @@
-<footer>
-        <div class="container footer-container">
+        <footer>
+                <div class="container footer-container">
 
-            <div class="footer-copyright">
-                <p> <?php echo date('Y'); ?> Point Météo. Tous droits réservés.</p>
-            </div>
+                    <div class="footer-copyright">
+                        <p> <?php echo date('Y'); ?> Point Météo. Tous droits réservés.</p>
+                    </div>
+                    
+                    <div class="footer-center">
+                            <a href="plan.php">Plan du site</a>
+                            <a href="tech.php">Page Technique</a>
+                    </div>
+                    
+                    <div class="footer-info">
+                        <a href="about.php">À propos</a>
+        
+                    </div>
             
-            <div class="footer-center">
-                    <a href="plan.php">Plan du site</a>
-                    <a href="tech.php">Page Technique</a>
-            </div>
+                </div>
             
-            <div class="footer-info">
-                <a href="about.php">À propos</a>
-                <p>visiteurs : <?php $count= hitCounter(); echo $count['counter']; ?></p>
-                <!-- <a href="privacy.php">Confidentialité</a> -->
-            </div>
-     
-        </div>
-      
-</footer>
+        </footer>
 
-    <script src="js/script.js"></script>
-</body>
+    </body>
 </html>
 

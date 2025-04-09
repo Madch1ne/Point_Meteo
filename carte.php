@@ -1,5 +1,9 @@
 <?php
-        require("includes/header.inc.php");
+	declare(strict_types = 1);
+	$title ='Carte interactive - Point Météo';
+	$description ='';
+		require("includes/header.inc.php");
+		require("includes/weather_api.php");
 ?>
     <main>
 		<section class="container main-content">
@@ -23,7 +27,7 @@
                 </div>
                 <div class="search-container card">
                     <h2>Rechercher une Prévision</h2>
-                    <form action="forecast.php" method="GET" class="weather-form">
+                    <form action="prevision.php" method="GET" class="weather-form">
                         <div class="form-group">
                             <label for="ville">Ville</label>
                             <input type="text" id="ville" name="ville" placeholder="Selectionnez le nom de votre ville">

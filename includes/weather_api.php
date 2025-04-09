@@ -21,7 +21,6 @@ function prevision($ville) : array{
     if($data === false){
         return ["error" => "Erreur lors de la récupération des données"];
     }
-    //print_r($data);
 
     return array(
         'current' => [
@@ -84,44 +83,32 @@ function prevision($ville) : array{
             file_put_contents($filename, $initialLine, LOCK_EX);
         }
         
-        // Lire le contenu du fichier
-        $contents = file_get_contents($filename);
-        $contents = trim($contents);
-        
-        // S'il y a une virgule, on s'attend à un format "mois,counter"
-        if (strpos($contents, ',') !== false) {
-            list($storedMonth, $storedCounter) = explode(',', $contents);
-            $storedCounter = (int)$storedCounter;
-        } else {
-            // Si le fichier contient juste un nombre, on le traite comme tel et on utilise le mois courant
-            $storedCounter = (int)$contents;
-            $storedMonth = date("F");
-        }
-        
+        // le mois stocké dans le fichier
+        $moisEng = date("F");
         // Si le mois stocké est différent du mois en cours, réinitialiser le compteur
         $currentMonth = date("F");
-        if ($storedMonth !== $currentMonth) {
+        if ($moisEng !== $currentMonth) {
             $storedCounter = 0;
-            $storedMonth = $currentMonth;
+            $moisEng = $currentMonth;
         }
         
         // Incrémenter le compteur
         $storedCounter++;
         
         // Préparer la ligne CSV à réécrire
-        $line = $storedMonth . "," . $storedCounter;
-        file_put_contents($filename, $line, LOCK_EX);
+        $ligne = $moisEng . "," . $storedCounter;
+        file_put_contents($filename, $ligne, LOCK_EX);
         
         // Retourner les valeurs sous forme de tableau associatif
         return [
             'counter' => $storedCounter,
-            'date' => $storedMonth
+            'dates' => $moisEng
         ];
     }
 
     function visitVille($ville) {
         // Nom du fichier pour stocker les visites
-        $file = 'villes.csv';
+        $file = './util/villes.csv';
         
         // date et l'heure actuelle
         $dateTime = date("Y-m-d H:i:s");
@@ -134,7 +121,45 @@ function prevision($ville) : array{
             // Écriture de la ligne dans le fichier en utilisant fputcsv
             fputcsv($ecrit, $ligne);
             fclose($ecrit);
-       
+    }
+    
+    function villeStats() {
+        $file = './util/villes.csv';
+        $stats = [];  // Tableau associatif : [nom de la ville => nombre de visites]
+        
+        
+        if (($handle = fopen($file, 'r')) !== false) {
+            while (($data = fgetcsv($handle)) !== false) {
+                // Chaque ligne est formaté comme [dateTime, ville]
+                $ville = $data[1] ?? '';
+                if ($ville != '') {
+                    if (!isset($stats[$ville])) {
+                        $stats[$ville] = 0;
+                    }
+                    $stats[$ville]++;
+                }
+            }
+            fclose($handle);
+        }
+        return $stats;
+    }
+
+    function displayCitiesHistogram() {
+        $stats = villeStats();
+    
+        // Trouver le maximum pour normaliser la largeur des barres
+        $max = max($stats);
+        
+        echo '<ul style="list-style: none; padding: 0;">';
+        foreach ($stats as $city => $count) {
+            // Calcule la largeur en pourcentage (par exemple, maximum = 100%)
+            $width = ($max > 0) ? ($count / $max * 100) : 0;
+            echo '<li style="margin: 0.5rem 0;">';
+            echo '<strong>' . htmlspecialchars($city) . ' (' . $count . ' visites)</strong>';
+            echo '<div style="background: #3b82f6; height: 20px; width: ' . $width . '%;"></div>';
+            echo '</li>';
+        }
+        echo '</ul>';
     }
     
     

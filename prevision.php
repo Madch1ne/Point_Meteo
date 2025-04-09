@@ -1,23 +1,26 @@
-
 <?php
-        require("includes/header.inc.php");
+	declare(strict_types = 1);
+	$title ='Prévisions Météorologiques - Point Météo';
+	$description ='';
+		require("includes/header.inc.php");
 		require("includes/weather_api.php");
 
-		 // Récupération de la ville et de la région depuis l'URL (avec des valeurs par défaut)
+		// Récupération de la ville et de la région depuis l'URL (avec des valeurs par défaut)
 
-		//  $ville = ucfirst(strtolower(isset($_GET['city']))) ?? 'paris';
-		//  $region = ucfirst(strtolower(isset($_GET['region']))) ?? 'île-de-france';
-		 $ville = $_GET['city'] ?? 'paris';
-		 $region = $_GET['region'] ?? 'île-de-france';
+		 $ville = ucfirst(strtolower($_GET['ville'])) ?? 'paris';
+		 $region = ucfirst(strtolower($_GET['region'])) ?? 'île-de-france';
+		//  $ville = $_GET['ville'] ?? 'paris';
+		//  $region = $_GET['region'] ?? 'île-de-france';
 		 
-		 $ville =ucfirst(strtolower('tOuRs'));
+		 visitVille($ville) ;
+		//  $ville =ucfirst(strtolower('tOuRs'));
 		 // Récupération des données météo depuis l'API
 		 $weatherData = prevision($ville);
 ?>
-      <main>
+    <main>
         <div class="container">
             <div class="page-header">
-                 <a href="index.php" class="back-button"> <!-- il faut voir le lien ici avec la page accueil -->
+                 <a href="carte.php" class="back-button"> <!-- il faut voir le lien ici avec la page accueil -->
                     <i class="fas fa-arrow-left"></i>
                 </a>
                 <h1>Prévisions Météo</h1>
@@ -26,8 +29,8 @@
             <div class="current-weather card">
                 <div class="weather-header">              <!-- a changer en prod -->
                     <div>								<!-- ucfirst pour métre la premiere lettre en majiscule -->
-                        <h2><?php echo htmlspecialchars(ucfirst(strtolower($ville))); ?></h2> 
-                        <p><?php echo htmlspecialchars(ucfirst(strtolower($region))); ?>, France</p>
+                        <h2><?php echo htmlspecialchars($ville); ?></h2> 
+                        <p><?php echo htmlspecialchars($region); ?>, France</p>
                     </div>
                     <div class="current-temp">
                         <span><?php echo isset($weatherData['current']['temp']) ? round($weatherData['current']['temp']) : '18'; ?>°C</span>
@@ -77,8 +80,6 @@
                 <div class="tab-header">
 					<a id="day" class="tab-btn" href="#daily">Prévisions 4 jours</a>
 					<a class="tab-btn" href="#hourly">Prévisions horaires</a>
-                    <!-- <button class="tab-btn" data-tab="daily">Prévisions 3 jours</button> -->
-                    <!-- <button class="tab-btn" type="button" data-bs-toggle="collapse" data-bs-target="#hourly" aria-expanded="false" aria-controls="hourly" data-tab="hourly">Prévisions horaires</button> -->
                 </div>
                 
                 <div class="tab-content">
@@ -86,16 +87,16 @@
                         <div class="daily-prevision">
                             <?php
                             
-                            $daily = $weatherData['daily'];
-                            foreach ($daily as $day) {
-                                echo '<div class="prevision-card">';
-                                echo '<div class="prevision-day">' . $day['day'] . '</div>';
-								echo '<img src="'. $day['icon'] .'"/>';
-                                echo '<div class="prevision-temp">' . $day['tempMin'] . '°C</div>';
-								echo '<div class="prevision-temp">' . $day['tempMax'] . '°C</div>';
-                                echo '<div class="prevision-condition">' . $day['condition'] . '</div>';
-                                echo '</div>';
-                            }
+								$daily = $weatherData['daily'];
+								foreach ($daily as $day) {
+									echo '<div class="prevision-card">';
+									echo '<div class="prevision-day">' . $day['day'] . '</div>';
+									echo '<img src="'. $day['icon'] .'"/>';
+									echo '<div class="prevision-temp">' . $day['tempMin'] . '°C</div>';
+									echo '<div class="prevision-temp">' . $day['tempMax'] . '°C</div>';
+									echo '<div class="prevision-condition">' . $day['condition'] . '</div>';
+									echo '</div>';
+								}
                             ?>
                         </div>
                     </div>
@@ -104,16 +105,15 @@
                     <div id="hourly" class="collapse collapse-horizontal tab-pane">
                         <div class="hourly-prevision">
                             <?php
-							$hourly = $weatherData['hourly'];
-							foreach($hourly as $hour => $hourData){
-								echo '<div class="prevision-card">';
-									echo '<div class="prevision-hour">' . $hour . '</div>';
-									echo '<img src="'. $hourData['ICON'] .'"/>';
-									echo '<div class="prevision-temp">' . $hourData['TMP2m'] . '°C</div>';
-									echo '<div class="prevision-condition">' . $hourData['CONDITION'] . '</div>';
-								echo '</div>';
-
-							}                    
+								$hourly = $weatherData['hourly'];
+								foreach($hourly as $hour => $hourData){
+									echo '<div class="prevision-card">';
+										echo '<div class="prevision-hour">' . $hour . '</div>';
+										echo '<img src="'. $hourData['ICON'] .'"/>';
+										echo '<div class="prevision-temp">' . $hourData['TMP2m'] . '°C</div>';
+										echo '<div class="prevision-condition">' . $hourData['CONDITION'] . '</div>';
+									echo '</div>';
+								}                    
                             ?>
                         </div>
                     </div>
@@ -124,6 +124,5 @@
         </div>
     </main>
 
-<?php
-        require("includes/footer.inc.php");
-?>
+
+<?php require("includes/footer.inc.php"); ?>
