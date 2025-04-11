@@ -2,6 +2,61 @@
 declare(strict_types = 1);
 
 
+
+
+function get_departments() : array {
+    
+        $depFile = fopen("util/v_departement_2024.csv", "r");
+        $regionFile = fopen("utilv_region_2024.csv", "r");
+        $cityFile = fopen("util/cities.csv", "r");
+
+        $regionCodes = [];
+        $regions = [];
+
+        fgetcsv($regionFile);
+        while (($regionData = fgetcsv($regionFile)) !== FALSE) {
+            $regionCode = $regionData[0];
+            $regionName = $regionData[5];
+
+            $regionCodes[$regionCode] = $regionName;
+        }
+
+        fclose($regionFile);
+
+        fgetcsv($depFile);
+        while (($depData = fgetcsv($depFile)) !== FALSE) {
+            $regionCode = $depData[1];
+            $depNumber = $depData[0];
+            $depName = $depData[6];
+
+            if (isset($regionCodes[$regionCode])) {
+                $regionName = $regionCodes[$regionCode];
+
+                $regions[$regionName][] = ['num' => $depNumber, 'name' => $depName, 'cities' => []];
+            }
+        }
+
+        fclose($depFile);
+
+        fgetcsv($cityFile);
+        while (($cityData = fgetcsv($cityFile)) !== FALSE) {
+            $cityCode = $cityData[3];
+            $cityName = $cityData[4];
+            $cityDep = $cityData[1];
+
+            foreach ($regions as &$department) {
+                foreach ($department as &$dep) {
+                    if ($dep['num'] == $cityDep) {
+                        $dep['cities'][] = ['name' => $cityName, 'code' => $cityCode];
+                    }
+                }
+            }
+        }
+        fclose($cityFile);
+
+        return $regions;
+    }
+
    /**
      * recupere la méteo actuelle ainsi que les données des previsions prochaine selon la localité (JSON)
      * 
@@ -9,7 +64,7 @@ declare(strict_types = 1);
      * @return array tableau des données méteo 
      */
 function prevision($ville) : array{
-    $url = "http://www.prevision-meteo.ch/services/json/{$ville}";
+    $url = "https://www.prevision-meteo.ch/services/json/{$ville}";
     $json = file_get_contents($url);
 
     if ($json === false) {
@@ -76,6 +131,7 @@ function prevision($ville) : array{
      * @param string $filename Le chemin vers le fichier compteur. Par défaut, "counter.txt".
      * @return array Retourne un tableau de valeur mise à jour du compteur.
      */
+    
     function hitCounter($filename = './util/counter.csv') : array {
         // Si le fichier n'existe pas, le créer avec une ligne initiale "Mois,0"
         if (!file_exists($filename)) {
@@ -83,32 +139,56 @@ function prevision($ville) : array{
             file_put_contents($filename, $initialLine, LOCK_EX);
         }
         
-        // le mois stocké dans le fichier
-        $moisEng = date("F");
+        // Lire le contenu du fichier
+        $contents = file_get_contents($filename);
+        $contents = trim($contents);
+        
+        // S'il y a une virgule, on s'attend à un format "mois,counter"
+        if (strpos($contents, ',') !== false) {
+            list($storedMonth, $storedCounter) = explode(',', $contents);
+            $storedCounter = (int)$storedCounter;
+        } else {
+            // Si le fichier contient juste un nombre, on le traite comme tel et on utilise le mois courant
+            $storedCounter = (int)$contents;
+            $storedMonth = date("F");
+        }
+        $storedMonth = date("F");
         // Si le mois stocké est différent du mois en cours, réinitialiser le compteur
         $currentMonth = date("F");
-        if ($moisEng !== $currentMonth) {
+        if ($storedMonth !== $currentMonth) {
             $storedCounter = 0;
-            $moisEng = $currentMonth;
+            $storedMonth = $currentMonth;
         }
         
         // Incrémenter le compteur
         $storedCounter++;
         
         // Préparer la ligne CSV à réécrire
-        $ligne = $moisEng . "," . $storedCounter;
-        file_put_contents($filename, $ligne, LOCK_EX);
+        $line = $storedMonth . "," . $storedCounter;
+        file_put_contents($filename, $line, LOCK_EX);
         
         // Retourner les valeurs sous forme de tableau associatif
         return [
             'counter' => $storedCounter,
-            'dates' => $moisEng
+            'dates' => $storedMonth
         ];
     }
 
-    function visitVille($ville) {
+
+
+   /**
+     * Enregistre les villes vistées dans un fichier CSV.
+     *
+     * Cette fonction récupère la date et le nom de la ville passée en paramètre,
+     * puis ajoute une ligne dans le fichier CSV ('./util/villes.csv'). Chaque ligne
+     *  est dans le format [date, ville].
+     *
+     * @param string $ville Le nom des villes consultée.
+     * @return void
+     */
+    function visitVille($ville) : void {
         // Nom du fichier pour stocker les visites
-        $file = './util/villes.csv';
+        $file = './util/stats/villes.csv';
         
         // date et l'heure actuelle
         $dateTime = date("Y-m-d H:i:s");
@@ -123,8 +203,19 @@ function prevision($ville) : array{
             fclose($ecrit);
     }
     
-    function villeStats() {
-        $file = './util/villes.csv';
+
+
+   /**
+     * Analyse le fichier CSV des visites et calcule les statistiques par ville.
+     *
+     * Cette fonction lit le fichier CSV (./util/villes.csv) ligne par ligne en supposant que chaque
+     * ligne a pour structure [dateTime, ville]. Elle génère un tableau associatif où la clé est le nom de la ville
+     * et la valeur correspond au nombre de visites enregistrées pour cette ville.
+     *
+     * @return array Un tableau associatif [nom de la ville => nombre de visites].
+     */
+    function villeStats() : array {
+        $file = './util/stats/villes.csv';
         $stats = [];  // Tableau associatif : [nom de la ville => nombre de visites]
         
         
@@ -144,10 +235,19 @@ function prevision($ville) : array{
         return $stats;
     }
 
-    function displayCitiesHistogram() {
+    
+   /**
+     * Affiche un histogramme des villes les plus consultées.
+     *
+     * Cette fonction utilise les statistiques de la fonction villeStats().
+     * Pour déterminer la valeur maximale (nombre de visites)la largeur des barres d'histogramme.
+     *
+     * @return void
+     */
+    function displayCitiesHistogram() : void {
         $stats = villeStats();
     
-        // Trouver le maximum pour normaliser la largeur des barres
+        // Trouver le maximum pour la largeur des barres
         $max = max($stats);
         
         echo '<ul style="list-style: none; padding: 0;">';

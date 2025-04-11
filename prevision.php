@@ -7,11 +7,20 @@
 
 		// Récupération de la ville et de la région depuis l'URL (avec des valeurs par défaut)
 
-		 $ville = ucfirst(strtolower($_GET['ville'])) ?? 'paris';
-		 $region = ucfirst(strtolower($_GET['region'])) ?? 'île-de-france';
+		 $ville = isset($_GET['ville']) ? ucfirst(strtolower($_GET['ville'])) : 'Paris'; //git Si la variable existe, on la transforme en minuscule
+		 $region = isset($_GET['region']) ? ucfirst(strtolower($_GET['region'])) : 'île-de-france';
 		//  $ville = $_GET['ville'] ?? 'paris';
 		//  $region = $_GET['region'] ?? 'île-de-france';
 		 
+		// Cookie pour stocker la dernière ville consultée et la date de consultation
+			$cookieValue = json_encode([
+				'ville' => $ville,
+				'date' => date("Y-m-d H:i:s")
+			]);
+
+			// le cookie pour 30 jours 
+			setcookie('lastCity', $cookieValue, time() + (86400 * 30), "/");
+
 		 visitVille($ville) ;
 		//  $ville =ucfirst(strtolower('tOuRs'));
 		 // Récupération des données météo depuis l'API
@@ -29,8 +38,8 @@
             <div class="current-weather card">
                 <div class="weather-header">              <!-- a changer en prod -->
                     <div>								<!-- ucfirst pour métre la premiere lettre en majiscule -->
-                        <h2><?php echo htmlspecialchars($ville); ?></h2> 
-                        <p><?php echo htmlspecialchars($region); ?>, France</p>
+                        <h2><?php echo htmlspecialchars(ucfirst(strtolower($ville))); ?></h2> 
+                        <p><?php echo htmlspecialchars(ucfirst(strtolower($region))); ?>, France</p>
                     </div>
                     <div class="current-temp">
                         <span><?php echo isset($weatherData['current']['temp']) ? round($weatherData['current']['temp']) : '18'; ?>°C</span>

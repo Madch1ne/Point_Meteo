@@ -24,7 +24,7 @@ if($title =="Statistiques - Point Météo") $classe3 ="active";
             <meta name="viewport" content="width=device-width, initial-scale=1.0">
             <meta name="description" content="<?= $description ?>"/>
             <meta name="author" content="Dinga Madi" />
-            <meta name="author" content="Abdoulaye ---" />
+            <meta name="author" content="Diagne Abdoulaye" />
 
             <!-- <script src="js/script.js"></script> -->
             <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
@@ -63,11 +63,9 @@ if($title =="Statistiques - Point Météo") $classe3 ="active";
                             </div>
                         </div>
                         <button id="theme-toggle">
-                            <!-- <i class="fas fa-sun light-icon"></i> -->
                             <a href="index.php?style=<?=$url?>">
                                 <img src="./image/dark_icon.png" alt=" mode jour/nuit">
                             </a>
-                            <!-- <i class="fas fa-moon dark-icon"></i> -->
                         </button>
                     </div>
                 </div>

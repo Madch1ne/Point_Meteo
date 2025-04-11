@@ -22,6 +22,12 @@
 						<div class="chart-container">
 							<p>Mois:  <?= $count['dates']; ?></p>
 							<p>Nombre total de visiteurs:  <?= $count['counter']; ?></p>
+							<?php if (isset($_COOKIE['lastCity'])) {
+								$lastCityData = json_decode($_COOKIE['lastCity'], true);
+								$lastCity = $lastCityData['ville'];
+								$lastVisit = $lastCityData['date'];
+								// Vous pouvez afficher par exemple : "Dernière ville consultée : $lastCity le $lastVisit"
+							}?>
 						</div>
 					</div>
 
