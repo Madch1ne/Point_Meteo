@@ -1,7 +1,16 @@
 <?php
 include 'includes/function.inc.php';
 include 'includes/weather_api.php';
-include 'includes/header.inc.php';
+
+
+$regions = get_departments();
+echo"<pr>";
+echo"<pre>";
+print_r($regions);
+echo"<pre>";
+
+
+
 
 $key = "36d7bf6d3ef04cdea4953d1fea19de1c";
 $Wip = "193.54.115.192";
@@ -51,5 +60,7 @@ echo"<pre>";
 print_r($count);
 echo"<pre>";
 // echo $count['counter'];
+
+
 ?>
 

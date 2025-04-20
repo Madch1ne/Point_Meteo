@@ -1,0 +1,422 @@
+/* Reset de base */
+* {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+}
+  
+/* Styles généraux */
+body {
+    font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+    background-color: #121212;
+    color: #e2e8f0;
+    line-height: 1.6;
+    transition: background-color 0.3s, color 0.3s;
+}
+  
+/* Container centré */
+.container {
+    max-width: 1200px;
+    margin: 0 auto;
+    padding: 0 1rem;
+}
+  
+/* Typographie */
+h1, h2, h3, h4, h5, h6 {
+    margin-bottom: 0.5rem;
+    font-weight: 600;
+    line-height: 1.2;
+}
+h1 { 
+    font-size: 1.875rem; 
+}
+h2 { 
+    font-size: 1.5rem; 
+}
+p { 
+    margin-bottom: 1rem; 
+}
+a {
+    color: #60a5fa;
+    text-decoration: none;
+    transition: color 0.2s;
+}
+a:hover {
+    text-decoration: underline;
+}
+
+.tlt {
+    text-align: center;
+}
+
+  
+/* Header */
+header {
+    background-color: #1e1e1e;
+    border-bottom: 1px solid #2d3748;
+    padding: 1rem;
+    position: sticky;
+    top: 0;
+    z-index: 100;
+}
+.header-container {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    height: 4.5rem;
+}
+
+nav ul {
+    list-style: none;
+    display: flex;
+    gap: 1.5rem;
+}
+nav a {
+    font-size: 0.875rem;
+    font-weight: 500;
+    color: #a0aec0;
+    transition: color 0.2s;
+}
+nav a:hover,
+nav a.active {
+    color: #e2e8f0;
+}
+
+/* logo */
+.logo {
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+}
+
+.logo a { 
+    color: #60a5fa;
+    font-size: 1.5rem;
+    display: flex;
+    align-items: center;
+    gap: 5px;
+    margin-top: -9%;
+    margin-left: -25%;
+    text-decoration: none;
+}
+
+.logo img {
+    width: 200px;
+    height: 180px;
+    /* border-radius: 50%; */
+    /* border: 2px solid #1e1e1e; */
+    transition: transform 0.3s ease;
+}
+
+.logo img:hover {
+    transform: scale(1.1);
+}
+  
+/* Main Content */
+main {
+    padding: 2rem 0;
+}
+  
+/* Cartes (cards) */
+.card {
+    background-color: #1e1e1e;
+    border: 1px solid #2d3748;
+    border-radius: 0.5rem;
+    padding: 1.5rem;
+    box-shadow: 0 1px 3px rgba(0, 0, 0, 0.3);
+}
+  
+/* Footer */
+footer {
+    background-color: #1e1e1e;
+    border-top: 1px solid #2d3748;
+    padding: 0;
+    text-align: center;
+}
+.footer-container {
+    display: flex;
+    flex-direction: column;
+    gap: 1rem;
+    align-items: center;
+}
+@media (min-width: 768px) {
+    .footer-container {
+        flex-direction: row;
+        justify-content: space-between;
+    }
+}
+.footer-info {
+    display: flex;
+    gap: 1.5rem;
+}
+.footer-info a {
+    font-size: 0.875rem;
+    color: #a0aec0;
+    transition: color 0.2s;
+}
+.footer-info a:hover {
+    color: #e2e8f0;
+}
+
+.footer-center {
+    display: flex;
+    gap: 1.5rem;
+}
+  
+/* le texte dans copyright */
+.footer-copyright p {  
+    padding: -6%;
+}
+
+
+/* *-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*- PAGES *-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*  */
+
+/*_________________________ page prevision _____________________*/
+.page-header {
+    display: flex;
+    align-items: center;
+    gap: 1rem;
+    margin-bottom: 1.5rem;
+}
+
+.back-button {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    width: 2.5rem;
+    height: 2.5rem;
+    border: 1px solid #a0aec0;
+    border-radius: 0.375rem;
+    color: #e2e8f0;
+    transition: background-color 0.2s;
+}
+
+.back-button:hover {
+    background-color: rgba(96, 165, 250, 0.2);
+    text-decoration: none;
+}
+
+.weather-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: flex-start;
+    margin-bottom: 1.5rem;
+}
+
+.current-weather {
+    margin-bottom: 2rem;
+}
+
+.current-temp {
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+}
+
+.current-temp span {
+    font-size: 2.5rem;
+    font-weight: 700;
+}
+
+.weather-details { /* tout le carré des details */
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: 1rem;
+}
+
+@media (min-width: 640px) {
+    .weather-details {
+        grid-template-columns: repeat(5, 1fr);
+    }
+}
+
+.weather-detail { /* une case des details */
+    display: flex;
+    align-items: center;
+    gap: 0.75rem;
+    
+}
+.weather-detail i {
+    font-size: 1.80rem;
+    color: #60a5fa;
+}
+
+.detail-value { /* réponse de l'api */
+    font-weight: 500;
+    margin-bottom: 0;
+}
+
+.detail-value-cond { /* affichage de condition */
+    font-size: 120%;
+    font-weight: 800;
+    margin-bottom: 0;
+}
+
+/* tab tab tab tab tab tab tab tab tab tab tab tab tab tab */
+
+/* prevision Tabs */
+.prevision-tabs {
+    margin-bottom: 2rem;
+}
+
+/* bouton choix */
+.tab-header {
+    display: flex;
+    border-bottom: 1px solid #2d3748; /* La ligne de séparation */
+    margin-bottom: 1rem;
+}
+.tab-header a:hover {
+    text-decoration: none;
+}
+.tab-btn {
+    padding: 0.75rem 1rem;
+    background: none;
+    border: none;
+    border-bottom: 2px solid transparent;
+    color: #a0aec0;
+    font-weight: 500;
+    cursor: pointer;
+    transition: color 0.2s, border-color 0.2s;
+    /* transition-duration: 0.7s; */
+}
+.tab-btn:hover {
+    /* background-color: #6b7280; */
+    color: #60a5fa;
+    border-bottom-color: #60a5fa;
+}
+.button-group a {
+    margin: 5px;
+    text-decoration: none;
+    padding: 10px 15px;
+    border-radius: 4px;
+  }
+
+.btn-primary {
+    background-color: #007bff;
+    color: #fff;
+  }
+
+.btn-outline {
+    background-color: transparent;
+    border: 2px solid #fff;
+    color: #fff;
+  }
+/* case de previson jour/heure */
+.tab-pane {
+    display: none;
+}
+.tab-pane:target {
+    display: block;
+}
+
+.daily-prevision {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(80px, 1fr));
+    gap: 1rem;
+}
+.hourly-prevision {
+    display: flex;
+    overflow-x: auto;
+    gap: 0.5rem;
+    padding-bottom: 1rem;
+}
+
+.prevision-card {
+    background-color: #1e1e1e;
+    border: 1px solid #2d3748;
+    border-radius: 0.375rem;
+    padding: 0.75rem;
+    text-align: center;
+    min-width: 80px;
+}
+.prevision-day, .prevision-hour {
+    font-size: 0.875rem;
+    font-weight: 800;
+    margin-bottom: 0.5rem;
+}
+
+/*_________________________ page carte _____________________*/
+
+.weather-form {
+    display: flex;
+    flex-direction: column;
+    gap: 1rem;
+}
+.form-group {
+    display: flex;
+    flex-direction: column;
+    gap: 0.5rem;
+}
+.form-group label {
+    font-size: 0.875rem;
+    font-weight: 500;
+}
+
+input, select {
+    padding: 0.5rem;
+    border: 1px solid #2d3748;
+    border-radius: 0.375rem;
+    background-color: #2d3748;
+    color: #e2e8f0;
+    font-size: 1rem;
+}
+
+.welcome-section.card { 
+    position: relative;
+    overflow: hidden;
+  }
+/* La structure du slider */
+.slider {
+    position: relative;
+  }
+  /* L'image s'affiche en prenant toute la largeur */
+  .slider img {
+    width: 100%;
+    height: auto;
+    display: block;
+  }
+  /* Le conteneur d'overlay positionné sur l'image */
+  .card-overlay {
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+    text-align: center;
+    background: rgba(0, 0, 0, 0.5); /* Optionnel: assombrit l'image pour une meilleure lisibilité */
+    color: #fff;
+    padding: 20px;
+  }
+/* *-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-PAGE TECH*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-* */
+ 
+/* ______________________ page Technique ____________________ */
+article {
+    background-color: #1e1e1e;
+    border: 1px solid #2d3748;
+    border-radius: 4px;
+    margin-bottom: 2rem;
+    padding: 1.5rem;
+    box-shadow: 0 1px 3px rgba(0,0,0,0.5), 0 1px 2px rgba(0,0,0,0.6);
+}
+
+/* Instructions */
+article > p {
+    background-color: #172a46; /* bleu foncé */
+    border-left: 4px solid #60a5fa;
+    padding: 0.5rem 1rem;
+    margin-bottom: 1rem;
+}
+
+/* Resultats */
+article > div {
+    background-color: #1a2234; /* bleu très sombre */
+    border: 1px solid #60a5fa;
+    border-radius: 4px;
+    padding: 1rem;
+    margin-top: 1rem;
+    box-shadow: inset 0 2px 4px rgba(0,0,0,0.3);
+}

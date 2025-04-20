@@ -1,19 +1,25 @@
 /**
- * Main JavaScript file for the Météo France website
+ * Main JavaScript file 
  */
 
+
+// Quand le DOM est prêt
 document.addEventListener('DOMContentLoaded', function() {
-    // Theme toggle functionality
-    const themeToggle = document.getElementById('theme-toggle');
-    if (themeToggle) {
-        themeToggle.addEventListener('click', function() {
-            const currentTheme = document.body.classList.contains('dark') ? 'light' : 'dark';
-            document.body.classList.toggle('dark');
-            
-            // Save theme preference in cookie
-            document.cookie = `theme=${currentTheme}; path=/; max-age=31536000`; // 1 year
-        });
-    }
-    
-   
+  const toggle = document.getElementById('theme-toggle');
+  const linkEl = document.querySelector('link[rel="stylesheet"][href*="style"]');
+  const body = document.body;
+
+  toggle.addEventListener('click', function() {
+    // On envoie la classe 'dark' sur <body>
+    const isDark = body.classList.toggle('dark');
+    body.classList.toggle('light', !isDark);
+
+    // On change la feuille de style
+    const newCss = isDark ? 'css/style_alternatif.css' : 'css/style.css';
+    linkEl.setAttribute('href', newCss);
+
+    // On met à jour le cookie pour 1 an
+    document.cookie = `theme=${isDark ? 'dark' : 'light'};path=/;max-age=${60*60*24*365}`;
+  });
 });
+

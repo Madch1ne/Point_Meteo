@@ -2,27 +2,55 @@
 	declare(strict_types = 1);
 	$title ='Prévisions Météorologiques - Point Météo';
 	$description ='';
+        require("includes/function.inc.php");
 		require("includes/header.inc.php");
 		require("includes/weather_api.php");
+         
 
-		// Récupération de la ville et de la région depuis l'URL (avec des valeurs par défaut)
-
-		 $ville = isset($_GET['ville']) ? ucfirst(strtolower($_GET['ville'])) : 'Paris'; //git Si la variable existe, on la transforme en minuscule
-		 $region = isset($_GET['region']) ? ucfirst(strtolower($_GET['region'])) : 'île-de-france';
-		//  $ville = $_GET['ville'] ?? 'paris';
-		//  $region = $_GET['region'] ?? 'île-de-france';
-		 
-		// Cookie pour stocker la dernière ville consultée et la date de consultation
-			$cookieValue = json_encode([
-				'ville' => $ville,
-				'date' => date("Y-m-d H:i:s")
-			]);
-
-			// le cookie pour 30 jours 
-			setcookie('lastCity', $cookieValue, time() + (86400 * 30), "/");
-
-		 visitVille($ville) ;
-		//  $ville =ucfirst(strtolower('tOuRs'));
+        // Pour la Ville
+        if (!empty($_GET['ville'])) {
+            $ville = ucfirst(strtolower($_GET['ville']));
+        }
+        elseif (isset($_COOKIE['lastCity'])) {
+            $last   = json_decode($_COOKIE['lastCity'], true);
+            $ville  = ucfirst(strtolower($last['ville'])) ?? '';
+        }
+        else {
+            $geokey = 'cbf9e49b-7461-4ae9-a349-91f6e70bd452'; 
+            $ip = $_SERVER['REMOTE_ADDR'] ?? '';
+            $geo = getGeoPData($geokey, $ip);
+            $ville = ucfirst(strtolower($geo['ville'])) ?? '';
+        }
+        if (empty($ville)) {
+            $ville = 'Paris';
+        }
+        
+        // Pour la Région
+        if (!empty($_GET['region'])) {
+            $region = ucfirst(strtolower($_GET['region']));
+        }
+        elseif (isset($last['region'])) {
+            $region = ucfirst(strtolower($last['region']));
+        }
+        else {
+            // getGeoPData renvoie 'region'
+            $region = isset($geo) ? ucfirst(strtolower($geo['region'])) : '';
+        }
+        if (empty($region)) {
+            $region = 'Île-de-France';
+        }
+        
+        // 3) Enregistrer le cookie lastCity
+        $cookieValue = json_encode([
+            'ville'  => $ville,
+            'region' => $region,
+            'date'   => date("Y-m-d H:i:s")
+        ]);
+        setcookie('lastCity', $cookieValue, time() + 86400 * 30, '/');
+        
+        //sauvegarde de la ville 
+        visitVille($ville);
+		
 		 // Récupération des données météo depuis l'API
 		 $weatherData = prevision($ville);
 ?>
@@ -36,7 +64,7 @@
             </div>
 								
             <div class="current-weather card">
-                <div class="weather-header">              <!-- a changer en prod -->
+                <div class="weather-header">              
                     <div>								<!-- ucfirst pour métre la premiere lettre en majiscule -->
                         <h2><?php echo htmlspecialchars(ucfirst(strtolower($ville))); ?></h2> 
                         <p><?php echo htmlspecialchars(ucfirst(strtolower($region))); ?>, France</p>

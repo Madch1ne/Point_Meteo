@@ -65,7 +65,15 @@
     align-items: center;
     height: 4.5rem;
   }
-
+  .controls {
+    display: flex;
+    align-items: center;
+    gap: 1rem;
+  }
+  .language-selector,
+  #theme-toggle {
+    flex-shrink: 0;
+  }
   nav ul {
     list-style: none;
     display: flex;
@@ -344,6 +352,58 @@ input, select {
     color: #1f2937;
     font-size: 1rem;
 }
+
+/*_________________________ page index _____________________*/
+
+.welcome-section.card { 
+  position: relative;
+  overflow: hidden;
+}
+/* La structure du slider */
+.slider {
+  position: relative;
+}
+/* L'image s'affiche en prenant toute la largeur */
+.slider img {
+  width: 100%;
+  height: auto;
+  display: block;
+}
+/* Le conteneur d'overlay positionné sur l'image */
+.card-overlay {
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+  text-align: center;
+  background: rgba(0, 0, 0, 0.5); /* Optionnel: assombrit l'image pour une meilleure lisibilité */
+  color: #fff;
+  padding: 20px;
+}
+/* le style des boutons */
+.button-group a {
+  margin: 5px;
+  text-decoration: none;
+  padding: 10px 15px;
+  border-radius: 4px;
+}
+.btn-primary {
+  background-color: #007bff;
+  color: #fff;
+}
+.btn-outline {
+  background-color: transparent;
+  border: 2px solid #fff;
+  color: #fff;
+}
+
+
+
 /* *-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-PAGE TECH*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-* */
  
   /* ______________________ page Technique ____________________ */

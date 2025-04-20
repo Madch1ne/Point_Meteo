@@ -1,12 +1,6 @@
 <?php
 declare(strict_types = 1);
 
-// Sélection de la langue (par défaut: français)
-$lang = isset($_GET['lang']) && $_GET['lang'] === 'en' ? 'english.inc.php' : 'french.inc.php';
-
-// Sélection du style (mode jour/nuit)
-$style = isset($_GET['style']) && $_GET['style'] === 'alternatif' ? 'style_alternatif.css' : 'styles.css';
-
 $description = "Ce site est un travail demnandé en classe de developpement web, à l'université de Cergy pour se familiariser avec le language PHP";
 $title = "PHP: technique";
 $h1 = "Page techinque";
@@ -21,7 +15,7 @@ $result = getApodData($apiKey, $date);
 // Récupérer les données géographiques 
      //geoplugin
 $geokey = "cbf9e49b-7461-4ae9-a349-91f6e70bd452";
-$ip = "193.54.115.192";//$_SERVER['REMOTE_ADDR'];// affichera "193.54.115.192";
+$ip = $_SERVER['REMOTE_ADDR'];//"193.54.115.192";// affichera "193.54.115.192";
 $geopData = getGeoPData($geokey, $ip);
 
     //ipinfo
@@ -30,7 +24,7 @@ $geoIData = getGeoIData($infoIp);
 
    //Whatsmyip
 $key = "36d7bf6d3ef04cdea4953d1fea19de1c";
-$Wip = "193.54.115.192"; //$_SERVER['REMOTE_ADDR'];// affichera "193.54.115.192";
+$Wip = $_SERVER['REMOTE_ADDR']; //"193.54.115.192"; // affichera "193.54.115.192";
 $geoWData = getGeoWData($key, $Wip);
 
 ?>     

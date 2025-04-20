@@ -1,7 +1,7 @@
 <?php
 	declare(strict_types = 1);
 	$title ='Statistiques - Point Météo';
-	$description ='';
+	$description ='La page dedié aux statistiques notamment des villes les plus consultées.';
 		require("includes/header.inc.php");
 		require("includes/weather_api.php");
 
@@ -26,8 +26,9 @@
 								$lastCityData = json_decode($_COOKIE['lastCity'], true);
 								$lastCity = $lastCityData['ville'];
 								$lastVisit = $lastCityData['date'];
-								// Vous pouvez afficher par exemple : "Dernière ville consultée : $lastCity le $lastVisit"
+								
 							}?>
+							<p>Dernière ville consultée : <?=$lastCity ."le". $lastVisit?></p>
 						</div>
 					</div>
 

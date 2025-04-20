@@ -8,13 +8,17 @@ if($title =="Carte interactive - Point Météo") $classe1 ="active";
 if($title =="Prévisions Météorologiques - Point Météo") $classe2 ="active";
 if($title =="Statistiques - Point Météo") $classe3 ="active";
 // Sélection du style (mode jour/nuit)
+    // On lit le cookie 'theme' : 'light' ou 'dark'
+$theme = (isset($_COOKIE['theme']) && $_COOKIE['theme'] === 'dark') ? 'dark' : 'light';
+
+// En fonction, on choisit le CSS 
+if ($theme === 'dark') {
+    $style = 'style_alternatif.css';
+    $bodyClass = 'dark';
+} else {
     $style = 'style.css';
-    $url = 'standard';
-  
-    if(!empty($_GET['style']) && $_GET['style'] === 'standard'){ 
-        $style = 'style_alternatif.css';
-        $url = 'alternatif';
-    }
+    $bodyClass = 'light';
+}
 ?>
 
 <!DOCTYPE html>
@@ -38,7 +42,7 @@ if($title =="Statistiques - Point Météo") $classe3 ="active";
                 <title> <?= $title ?> </title>
     
         </head>
-        <body>
+        <body class="<?$bodyClass?>">
             <header>
                 <div class="container header-container">
                     <div class="logo">
@@ -58,14 +62,12 @@ if($title =="Statistiques - Point Météo") $classe3 ="active";
                                 <i class="fas fa-globe"></i>
                             </button>
                             <div class="language-dropdown">
-                                <a href="?lang=fr" <?php echo ($_GET['lang'] ?? 'fr') === 'fr' ? 'class="active"' : ''; ?>>Français</a>
-                                <a href="?lang=en" <?php echo ($_GET['lang'] ?? 'fr') === 'en' ? 'class="active"' : ''; ?>>English</a>
+                                <a href="?lang=fr" <?php echo ($_GET['lang'] ?? 'fr') === 'fr' ?  : ''; ?>>Français</a>
+                                <a href="?lang=en" <?php echo ($_GET['lang'] ?? 'fr') === 'en' ?  : ''; ?>>English</a>
                             </div>
                         </div>
                         <button id="theme-toggle">
-                            <a href="index.php?style=<?=$url?>">
                                 <img src="./image/dark_icon.png" alt=" mode jour/nuit">
-                            </a>
                         </button>
                     </div>
                 </div>
