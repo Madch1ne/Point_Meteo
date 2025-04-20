@@ -3,6 +3,38 @@ declare(strict_types = 1);
 
 
 //*_*_*_*_*_*_*_*_*_*_*_*_*_*_*_*_*_*_*ICI COMMENCE LES FONCTIONS DU PROJET WEB*_*_*_*_*_*_*_*_*_*__*_*_*_*_*/
+
+    /**
+     * Lit un fichier du cache.
+     *
+     * @param string $key       le nom de fichier sans extension(sera la clé unique ).
+     * @param int    $seconds   Durée de vie du cache (en secondes).
+     * @return mixed            Le contenu décodé du JSON, ou false si absent/périmé.
+     */
+        function cache_read(string $key, int $seconds) {
+            $file = "../util/cache/{$key}.json";
+            if (!is_file($file)) {
+                return false;
+            }
+            if (filemtime($file) < time() - $seconds) {
+                return false;
+            }
+            $json = file_get_contents($file);
+            return json_decode($json, true);
+        }
+
+    /**
+     * Écrit du contenu dans le cache JSON.
+     *
+     * @param string $key   clé unique (nom de fichier).
+     * @param mixed  $data  Données à encoder en JSON.
+     * @return void
+     */
+        function cache_write(string $key, $data): void {
+            $file ="../util/cache/{$key}.json";
+            file_put_contents($file, json_encode($data), LOCK_EX);
+        }
+
         
    /**
      * Récupère les données de l'API APOD de la NASA (JSON).
@@ -14,39 +46,54 @@ declare(strict_types = 1);
      * @param string $date   La date du jour pour récupérer les données.
      * @return array         Tableau associatif avec "media" et "explanation", ou une "error" en cas de problème.
      */
-        function getApodData($apiKey, $date) : array {
-            $url = "https://api.nasa.gov/planetary/apod?api_key={$apiKey}&date={$date}";
+        
+        function getApodData(string $apiKey, string $date): array {
+            $key    = 'apod_' . $date;
+            $cached = cache_read($key, 86400); // cache 24h
+            if ($cached !== false) {
+                return $cached;
+            }
+        
+            $url  = "https://api.nasa.gov/planetary/apod?api_key={$apiKey}&date={$date}";
+            $json = @file_get_contents($url);
             
-            // recuperation et verification si contenu ou non 
-            $json = file_get_contents($url);
+            //lecture du cahe, si existant
             if ($json === false) {
+                $old = cache_read($key, PHP_INT_MAX);
+                if ($old !== false) {
+                    return $old;
+                }
                 return ["error" => "Erreur lors de la récupération des données APOD."];
             }
-
+        
             // Décodage du JSON en tableau associatif
             $data = json_decode($json, true);
-            if (!$data){
-                return ["error" => "Erreur lors de la récupération des données APOD."];
-            }
-
-            // gestion des type de media
-            if ($data['media_type'] === 'video'){ 
-                    //  Pour une vidéo, on peut utiliser une balise <iframe> 
-                    $media = '<iframe width="560" height="315" src="'.$data['url'].'" frameborder="0" allowfullscreen></iframe>';
-                }else {
-                    // Pour une image 
-                    $media = '<img src="'. $data['url'] .'" alt="APOD" style="width: 100%;">';
+            if (!is_array($data)) {   
+                $old = cache_read($key, PHP_INT_MAX);
+                if ($old !== false) {
+                    return $old;
                 }
-            
-            $text = $data['explanation'];
-                
-                // tableau associatif contenant média et l'explication
-            return array(
-                "media" => $media,
-                "explanation" => $text
-                    );
-        }
+                return ["error" => "Données APOD JSON invalides."];
+            }
         
+            // gestion des type de media
+            if (($data['media_type'] ?? '') === 'video') {
+                //  Pour une vidéo
+                $media = '<iframe width="560" height="315" src="'. $data['url'] . '" frameborder="0" allowfullscreen></iframe>';
+            } else {
+                //  Pour une image 
+                $media = '<img src="' .$data['url'] . '" alt="APOD" style="width:100%;">';
+            }
+        
+            $result = [
+                "media"       => $media,
+                "explanation" => $data['explanation'] ?? ''
+            ];
+        
+            //mise en cache
+            cache_write($key, $result);
+            return $result;
+        }
         
         /**
          * Récupère les informations de géolocalisation au format XML depuis GeoPlugin.
@@ -92,6 +139,18 @@ declare(strict_types = 1);
         }
         
         // Fonction pour récupérer les données de ipinfo (Json)
+        /**
+         * Récupère les informations de géolocalisation via l’API ipinfo.io (format JSON).
+         *
+         * Cette fonction interroge l'API de ipinfo( https://ipinfo.io/{IP}/geo ) pour obtenir les données
+         * de localisation (pays, région, ville, code postal, etc.) associées à une adresse IP.
+         *
+         * @param string $ip Adresse IP à géolocaliser.
+         * @return array Tableau associatif 
+         * 
+         * 
+         */
+
         function getGeoIData($ip) : array {
             $url = "https://ipinfo.io/" . urlencode($ip) . "/geo";
             
@@ -120,6 +179,17 @@ declare(strict_types = 1);
         }
 
         // Fonction pour récupérer les données de whatsmyip : 36d7bf6d3ef04cdea4953d1fea19de1c (XML) 
+        /**
+         * Récupère les informations de géolocalisation via l’API WhatIsMyIP (format XML).
+         *
+         * https://api.whatismyip.com/ip-address-lookup.php avec clé et IP
+         * pour obtenir un flux XML contenant des données sur l’IP, l’ISP, la ville, le pays, etc.
+         *
+         * @param string $key  Clé API fournie par WhatIsMyIP.
+         * @param string $Wip  Adresse IP à interroger.
+         * @return array Tableau associatif
+         * 
+         */
         function getGeoWData($key,$Wip): array {
             $url = "https://api.whatismyip.com/ip-address-lookup.php?key={$key}&input={$Wip}&output=xml";
                 

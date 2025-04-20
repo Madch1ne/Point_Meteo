@@ -1,7 +1,15 @@
 <?php
 declare(strict_types = 1);
+include("../includes/function.inc.php");
 
 // Fonction pour obtenir les coordonnées d'une région 
+/**
+ * Retourne les coordonnées de la région pour une image map en format chaîne CSV.
+ *
+ * @param string $region Nom de la région (ex. "Bretagne").
+ * @return string Coordonnées à passer dans l’attribut coords de <area>.
+ *                Si la région n’existe pas, retourne une chaîne vide.
+ */
 function get_region_coords(string $region): string {
     $coords = [
         'Bretagne' => '47,184,59,172,72,170,93,174,109,169,135,166,142,183,157,188,177,187,198,186,218,199,231,201,227,219,229,232,221,243,210,243,197,247,183,259,162,267,130,251,88,232,65,232',//
@@ -21,7 +29,17 @@ function get_region_coords(string $region): string {
     return $coords[$region] ?? '';
 }
 
-
+   /**
+     * Construit le tableau des régions, départements et villes à partir de 3 fichiers CSV.
+     *
+     * Lit successivement :
+     *  - v_region_2024.csv  pour obtenir le code et le nom des régions,
+     *  - v_departement_2024.csv pour associer chaque département à sa région,
+     *  - cities.csv          pour rattacher chaque ville à son département.
+     *
+     * @return array Tableau associatif où chaque clé est un nom de région et la valeur est un tableau de départements lui-meme contenant les villes.
+     *               
+     */
 function get_departments() : array {
     
         $depFile = fopen("./util/ressources/v_departement_2024.csv", "r");
@@ -84,66 +102,79 @@ function get_departments() : array {
      * @param string $ville  nom de la ville
      * @return array tableau des données méteo 
      */
-function prevision($ville) : array{
-    $url = "https://www.prevision-meteo.ch/services/json/{$ville}";
-    $json = file_get_contents($url);
-
-    if ($json === false) {
-        return ["error" => "Erreur lors de la récupération des données"];
-    }
+    function prevision(string $ville): array {
+        $key      = 'prevision_' . strtolower($ville);
+        $cached   = cache_read($key, 3600); // cache 1h
+        if ($cached !== false) {
+            return $cached;
+        }
     
-    // Décodage du JSON en tableau associatif
-    $data = json_decode($json, true);
-    if($data === false){
-        return ["error" => "Erreur lors de la récupération des données"];
+        $url  = "https://www.prevision-meteo.ch/services/json/{$ville}";
+        $json = file_get_contents($url);
+        if ($json === false) {
+            // en cas d’erreur, retombe sur cache périmé
+            $old = cache_read($key, PHP_INT_MAX);
+            if ($old !== false) {
+                return $old;
+            }
+            return ["error" => "Erreur lors de la récupération des données météo."];
+        }
+    
+        $data = json_decode($json, true);
+        if (!is_array($data)) {
+            $old = cache_read($key, PHP_INT_MAX);
+            if ($old !== false) {
+                return $old;
+            }
+            return ["error" => "Données météo JSON invalides."];
+        }
+    
+        $result = [
+            'current' => [
+                'temp'      => $data['current_condition']['tmp'] ?? null,
+                'condition' => $data['current_condition']['condition'] ?? null,
+                'humidity'  => $data['current_condition']['humidity'] ?? null,
+                'wind'      => $data['current_condition']['wnd_spd'] ?? null,
+                'rise'      => $data['city_info']['sunrise'] ?? null,
+                'set'       => $data['city_info']['sunset'] ?? null,
+                'icon'      => $data['current_condition']['icon_big'] ?? null,
+            ],
+            'daily' => [
+                [
+                    'day'       => $data['fcst_day_1']['day_long']  ?? null,
+                    'tempMax'   => $data['fcst_day_1']['tmax']      ?? null,
+                    'tempMin'   => $data['fcst_day_1']['tmin']      ?? null,
+                    'condition' => $data['fcst_day_1']['condition'] ?? null,
+                    'icon'      => $data['fcst_day_1']['icon']      ?? null,
+                ],
+                [
+                    'day'       => $data['fcst_day_2']['day_long'],
+                    'tempMax'   => $data['fcst_day_2']['tmax'],
+                    'tempMin'   => $data['fcst_day_2']['tmin'],
+                    'condition' => $data['fcst_day_2']['condition'],
+                    'icon'      => $data['fcst_day_2']['icon'],
+                ],
+                [
+                    'day'       => $data['fcst_day_3']['day_long'] ,
+                    'tempMax'   => $data['fcst_day_3']['tmax'] ,
+                    'tempMin'   => $data['fcst_day_3']['tmin'],
+                    'condition' => $data['fcst_day_3']['condition'],
+                    'icon'      => $data['fcst_day_3']['icon'],
+                ],
+                [
+                    'day'       => $data['fcst_day_4']['day_long'] ,
+                    'tempMax'   => $data['fcst_day_4']['tmax'] ,
+                    'tempMin'   => $data['fcst_day_4']['tmin'],
+                    'condition' => $data['fcst_day_4']['condition'],
+                    'icon'      => $data['fcst_day_4']['icon'],
+                ],
+            ],
+            'hourly' => $data['fcst_day_0']['hourly_data']
+        ];
+    
+        cache_write($key, $result);
+        return $result;
     }
-
-    return array(
-        'current' => [
-            'temp' => $data['current_condition']['tmp'],
-            'condition' => $data['current_condition']['condition'],
-            'humidity' => $data['current_condition']['humidity'],
-            'wind' => $data['current_condition']['wnd_spd'],
-            'rise' => $data['city_info']['sunrise'],
-            'set' => $data['city_info']['sunset'],
-            'icon' => $data['current_condition']['icon_big'],
-        ],
-        'daily' => [
-            [
-             'day' => $data['fcst_day_1']['day_long'], 
-             'tempMax' => $data['fcst_day_1']['tmax'], 
-             'tempMin' => $data['fcst_day_1']['tmin'], 
-             'condition' => $data['fcst_day_1']['condition'],
-             'icon' => $data['fcst_day_1']['icon']
-            ],
-            [
-             'day' => $data['fcst_day_2']['day_long'], 
-             'tempMax' => $data['fcst_day_2']['tmax'], 
-             'tempMin' => $data['fcst_day_2']['tmin'], 
-             'condition' => $data['fcst_day_2']['condition'],
-             'icon' => $data['fcst_day_2']['icon']
-            ],
-            [
-             'day' => $data['fcst_day_3']['day_long'], 
-             'tempMax' => $data['fcst_day_3']['tmax'], 
-             'tempMin' => $data['fcst_day_3']['tmin'], 
-             'condition' => $data['fcst_day_3']['condition'],
-             'icon' => $data['fcst_day_3']['icon']
-            ],
-            [
-                'day' => $data['fcst_day_4']['day_long'], 
-                'tempMax' => $data['fcst_day_4']['tmax'], 
-                'tempMin' => $data['fcst_day_4']['tmin'], 
-                'condition' => $data['fcst_day_4']['condition'],
-                'icon' => $data['fcst_day_4']['icon']
-               ],
-        ],
-        'hourly' => $data['fcst_day_0']['hourly_data'], 
-
-    );
-
-}
-
    /**
      * Met à jour le compteur de fréquentation stocké dans un fichier texte.
      *
@@ -283,8 +314,12 @@ function prevision($ville) : array{
         echo '</ul>';
     }
 
-
-    function images(){
+   /**
+     * Retourne le chemin d’une image aléatoire parmi une liste prédéfinie.
+     *
+     * @return string le chemin relatif vers l'image.
+     */
+    function images() : string {
         // tableau avec les chemins vers les images 
             $imagesLink = [
                 "./image/random/plage.jpg",
@@ -301,7 +336,6 @@ function prevision($ville) : array{
 
             ];
 
-        // Sélectionner une image aléatoire
         return $imagesLink[array_rand($imagesLink)];
     }
     
