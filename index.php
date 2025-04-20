@@ -1,7 +1,7 @@
 <?php
 declare(strict_types = 1);
 $title ='Accueil - Point Météo';
-	$description ='';
+	$description ='Cette page affiche les prévisions météo actuelles et horaires pour les villes selectionnées.';
 		require("includes/header.inc.php");
 		require("includes/weather_api.php");
 

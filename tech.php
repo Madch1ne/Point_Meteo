@@ -19,7 +19,7 @@ $ip = $_SERVER['REMOTE_ADDR'];//"193.54.115.192";// affichera "193.54.115.192";
 $geopData = getGeoPData($geokey, $ip);
 
     //ipinfo
-$infoIp = "193.54.115.192";
+$infoIp = "193.54.115.192"; 
 $geoIData = getGeoIData($infoIp);
 
    //Whatsmyip
