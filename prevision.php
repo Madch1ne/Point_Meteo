@@ -1,5 +1,6 @@
 <?php
 	declare(strict_types = 1);
+    $lang  = isset($_GET['lang']) ? $_GET['lang'] : 'fr';
 	$title ='Prévisions Météorologiques - Point Météo';
 	$description ='';
         require("includes/function.inc.php");
@@ -60,7 +61,7 @@
                  <a href="carte.php" class="back-button"> <!-- il faut voir le lien ici avec la page accueil -->
                     <i class="fas fa-arrow-left"></i>
                 </a>
-                <h1>Prévisions Météo</h1>
+                <h1><?= $lang === 'fr' ? 'Prévisions Météo' : 'Weather Forecast' ?></h1>
             </div>
 								
             <div class="current-weather card">
@@ -78,28 +79,28 @@
                     <div class="weather-detail">
                         <i class="fas fa-tint"></i>
                         <div>
-							<label>Humidité</label>
+							<label><?= $lang === 'fr' ? 'Humidité' : 'Humidity' ?></label>
                             <p class="detail-value"><?php echo isset($weatherData['current']['humidity']) ? $weatherData['current']['humidity'] : '10'; ?>%</p>
                         </div>
                     </div>
                     <div class="weather-detail">
                         <i class="fas fa-wind"></i>
                         <div>
-                            <label>Vent</label>
+                            <label><?= $lang === 'fr' ? 'Vent' : 'Wind' ?></label>
                             <p class="detail-value"><?php echo isset($weatherData['current']['wind']) ? $weatherData['current']['wind'] : '10'; ?> km/h</p>
                         </div>
                     </div>
                     <div class="weather-detail">
                         <i class="fas fa-sun"></i>
                         <div>
-                            <label>Levé du soleil</label>
+                            <label><?= $lang === 'fr' ? 'Levé du soleil' : 'Sunrise' ?></label>
                             <p class="detail-value"><?php echo isset($weatherData['current']['rise']) ? $weatherData['current']['rise'] : '10'; ?></p>
                         </div>
                     </div>
 					<div class="weather-detail">
                         <i class="far fa-sun"></i>
                         <div>
-                            <label>Couché du soleil</label>
+                            <label><?= $lang === 'fr' ? 'Couché du soleil' : 'Sunset' ?></label>
                             <p class="detail-value"><?php echo isset($weatherData['current']['set']) ? $weatherData['current']['set'] : '10'; ?></p>
                         </div>
                     </div>
@@ -115,8 +116,8 @@
 
             <div class="prevision-tabs">
                 <div class="tab-header">
-					<a id="day" class="tab-btn" href="#daily">Prévisions 4 jours</a>
-					<a class="tab-btn" href="#hourly">Prévisions horaires</a>
+					<a id="day" class="tab-btn" href="#daily"><?= $lang === 'fr' ? 'Prévisions 4 jours' : '4 days Forecast' ?></a>
+					<a class="tab-btn" href="#hourly"><?= $lang === 'fr' ? 'Prévisions horaires' : 'Hourly Forecast' ?></a>
                 </div>
                 
                 <div class="tab-content">
