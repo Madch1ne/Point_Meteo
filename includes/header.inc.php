@@ -24,8 +24,8 @@ if ($theme === 'dark') {
 <!DOCTYPE html>
     <html lang="fr">
         <head>
-            <meta charset="utf-8">
-            <meta name="viewport" content="width=device-width, initial-scale=1.0">
+            <meta charset="utf-8"/>
+            <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
             <meta name="description" content="<?= $description ?>"/>
             <meta name="author" content="Dinga Madi" />
             <meta name="author" content="Diagne Abdoulaye" />
@@ -33,7 +33,7 @@ if ($theme === 'dark') {
             <!-- <script src="js/script.js"></script> -->
             <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
             
-            <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+            <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css"/>
             <link rel="icon" href="image/logo.png" type="image/x-icon" /> <!--  faut changer l'icon -->
             <!-- <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.5/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-SgOJa3DmI69IUzQ2PVdRZhwQ+dy64/BUtbMJw1MZ8t5HZApcHrRKUc4W0kG879m7" crossorigin="anonymous"> -->
 
@@ -42,7 +42,7 @@ if ($theme === 'dark') {
                 <title> <?= $title ?> </title>
     
         </head>
-        <body class="<?$bodyClass?>">
+        <body class="<?= htmlspecialchars($bodyClass) ?>">
             <header>
                 <div class="container header-container">
                     <div class="logo">
@@ -62,12 +62,12 @@ if ($theme === 'dark') {
                                 <i class="fas fa-globe"></i>
                             </button>
                             <div class="language-dropdown">
-                                <a href="?lang=fr" <?php echo ($_GET['lang'] ?? 'fr') === 'fr' ?  : ''; ?>>Français</a>
-                                <a href="?lang=en" <?php echo ($_GET['lang'] ?? 'fr') === 'en' ?  : ''; ?>>English</a>
+                                <a href="?lang=fr" <?php echo ($_GET['lang'] ?? 'fr') === 'fr' ? 'class="active"' : ''; ?>>Français</a>
+                                <a href="?lang=en" <?php echo ($_GET['lang'] ?? 'fr') === 'en' ? 'class="active"' : ''; ?>>English</a>
                             </div>
                         </div>
                         <button id="theme-toggle">
-                                <img src="./image/dark_icon.png" alt=" mode jour/nuit">
+                                <img src="./image/dark_icon.png" alt=" mode jour/nuit"/>
                         </button>
                     </div>
                 </div>

@@ -1,6 +1,6 @@
 <?php
 declare(strict_types = 1);
-include("../includes/function.inc.php");
+require_once("includes/function.inc.php");
 
 // Fonction pour obtenir les coordonnées d'une région 
 /**

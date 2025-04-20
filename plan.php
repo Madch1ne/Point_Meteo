@@ -2,7 +2,7 @@
 declare(strict_types = 1);
     $lang  = isset($_GET['lang']) ? $_GET['lang'] : 'fr';
 	$title ='Plan du site - Point Météo';
-	$description ='';
+	$description ='Cette page affiche le plan du site';
 		require("includes/header.inc.php");
 		
          

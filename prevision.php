@@ -2,7 +2,7 @@
 	declare(strict_types = 1);
     $lang  = isset($_GET['lang']) ? $_GET['lang'] : 'fr';
 	$title ='Prévisions Météorologiques - Point Météo';
-	$description ='';
+	$description ='Cette affiche les prévisions météo actuelles et horaires pour la ville choisie';
         require("includes/function.inc.php");
 		require("includes/header.inc.php");
 		require("includes/weather_api.php");

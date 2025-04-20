@@ -111,11 +111,70 @@ nav a.active {
 .logo img:hover {
     transform: scale(1.1);
 }
+
+/* Language Selector */
+.language-selector {
+  position: relative;
+}
+
+#language-btn {
+  background: none;
+  border: 1px solid #e5e7eb;
+  border-radius: 0.375rem;
+  width: 2.5rem;
+  height: 2.5rem;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  cursor: pointer;
+  color:#d7dce3;
+  transition: background-color 0.2s;
+}
+
+#language-btn:hover {
+  background-color: rgba(59, 130, 246, 0.1);
+}
+
+.language-dropdown {
+  position: absolute;
+  top: 100%;
+  right: 0;
+  background-color: #ffffff;
+  border: 1px solid #e5e7eb;
+  border-radius: 0.375rem;
+  box-shadow: 0 4px 6px #e5e7eb;
+  min-width: 10rem;
+  display: none;
+  z-index: 10;
+}
+
+.language-dropdown a {
+  display: block;
+  padding: 0.5rem 1rem;
+  color: #1f2937;
+  font-size: 0.875rem;
+}
+
+.language-dropdown a:hover, .language-dropdown a.active {
+  background-color: rgba(59, 130, 246, 0.1);
+  text-decoration: none;
+}
+
+.language-selector:hover .language-dropdown {
+  display: block;
+}
   
 /* Main Content */
 main {
     padding: 2rem 0;
 }
+
+.img-fluid {
+    display: block;   /* transforme l’image en bloc */
+    margin: 0 auto;   
+    max-width: 100%;  
+    height: auto;
+  }
   
 /* Cartes (cards) */
 .card {
@@ -289,6 +348,16 @@ footer {
     text-decoration: none;
     padding: 10px 15px;
     border-radius: 4px;
+  }
+
+  .controls {
+    display: flex;
+    align-items: center;
+    gap: 1rem;
+  }
+  .language-selector,
+  #theme-toggle {
+    flex-shrink: 0;
   }
 
 .btn-primary {

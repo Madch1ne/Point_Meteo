@@ -12,7 +12,7 @@ declare(strict_types = 1);
      * @return mixed            Le contenu décodé du JSON, ou false si absent/périmé.
      */
         function cache_read(string $key, int $seconds) {
-            $file = "../util/cache/{$key}.json";
+            $file = "./util/cache/{$key}.json";
             if (!is_file($file)) {
                 return false;
             }
@@ -31,7 +31,7 @@ declare(strict_types = 1);
      * @return void
      */
         function cache_write(string $key, $data): void {
-            $file ="../util/cache/{$key}.json";
+            $file ="./util/cache/{$key}.json";
             file_put_contents($file, json_encode($data), LOCK_EX);
         }
 
@@ -82,12 +82,12 @@ declare(strict_types = 1);
                 $media = '<iframe width="560" height="315" src="'. $data['url'] . '" frameborder="0" allowfullscreen></iframe>';
             } else {
                 //  Pour une image 
-                $media = '<img src="' .$data['url'] . '" alt="APOD" style="width:100%;">';
+                $media = '<img src="' .$data['url'] . '" alt="APOD" style="width:100%;"   />';
             }
         
             $result = [
                 "media"       => $media,
-                "explanation" => $data['explanation'] ?? ''
+                "explanation" => $data['explanation']
             ];
         
             //mise en cache

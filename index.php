@@ -14,7 +14,7 @@ $randomImage = images();
             <div class="welcome-section card">
                 <div class="slider">
                     <!-- Image qui changera toutes les 15 secondes -->
-                    <img id="sliderImage" src="<?php echo $randomImage; ?>" alt="Image aléatoire">
+                    <img id="sliderImage" src="<?php echo $randomImage; ?>" alt="Image aléatoire"/>
                     
                     <div class="card-overlay">
                         <h2>Bienvenue sur Point Météo</h2>

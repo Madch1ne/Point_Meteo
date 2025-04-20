@@ -22,23 +22,18 @@
 						<div class="chart-container">
 							<p>Mois:  <?= $count['dates']; ?></p>
 							<p>Nombre total de visiteurs:  <?= $count['counter']; ?></p>
-							<?php if (isset($_COOKIE['lastCity'])) {
+							<?php 
+								if (isset($_COOKIE['lastCity'])) {
 								$lastCityData = json_decode($_COOKIE['lastCity'], true);
 								$lastCity = $lastCityData['ville'];
 								$lastVisit = $lastCityData['date'];
-								
-							}?>
-							<p>Dernière ville consultée : <?=$lastCity ."le". $lastVisit?></p>
-						</div>
-					</div>
 
-					<div class="stats-card card">
-						<div class="card-header">
-							<h2>Répartition par Région</h2>
-							<p>Pourcentage de visiteurs par région</p>
-						</div>
-						<div class="chart-container">
-							
+								
+									if ($lastCity !== '' && $lastVisit !== '') {
+										echo '<p>Dernière ville consultée : '.$lastCity. ' le ' .$lastVisit. '</p>';			
+									}
+							    }
+							?>
 						</div>
 					</div>
 
@@ -56,34 +51,6 @@
 				</div>
 			</div>
         </section>
-
-		<script>
-			// Initialize charts with PHP data
-			document.addEventListener('DOMContentLoaded', function() {
-				// Visitors chart
-				const visitorsCtx = document.getElementById('visitors-chart').getContext('2d');
-				new Chart(visitorsCtx, {
-					type: 'line',
-					data: {
-						labels: <?php echo json_encode(array_column($count, $count['date'])); ?>,
-						datasets: [{
-							label: 'Visiteurs',
-							data: <?php echo json_encode(array_column($count, $count['counter'])); ?>,
-							borderColor: '#3b82f6',
-							backgroundColor: 'rgba(var(#3b82f6, 0.1)',
-							tension: 0.3,
-							fill: true
-						}]
-					},
-					options: {
-						responsive: true,
-						maintainAspectRatio: false
-					}
-				});
-			});
-
-		</script>
-
     </main>
 
 <?php
